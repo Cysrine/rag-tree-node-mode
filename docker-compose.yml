@@ -1,0 +1,25 @@
+# Postgres + pgvector for the tree/vector store, and an optional Linux "parser"
+# container so hi-res parsing + OCR run cleanly regardless of host OS (handy on
+# Windows, where unstructured's native deps are painful).
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: rag_tree_db
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: rag
+      POSTGRES_DB: rag
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # schema.sql is applied automatically on first boot of an empty volume.
+      - ./rag_pipeline/storage/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag -d rag"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
