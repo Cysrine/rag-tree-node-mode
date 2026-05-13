@@ -45,7 +45,9 @@ class Settings(BaseSettings):
     )
 
     # --- Storage ---
-    database_url: str = "postgresql://rag:rag@localhost:5432/rag"
+    # Host port 5433 matches docker-compose (kept off 5432 to avoid clashing with a
+    # native Postgres). Override via RAG_DATABASE_URL to point elsewhere.
+    database_url: str = "postgresql://rag:rag@localhost:5433/rag"
 
     # --- Embeddings ---
     embedding_provider: EmbeddingProvider = EmbeddingProvider.bge

@@ -10,7 +10,8 @@ services:
       POSTGRES_PASSWORD: rag
       POSTGRES_DB: rag
     ports:
-      - "5432:5432"
+      # Host 5433 avoids clashing with a native Postgres on the default 5432.
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       # schema.sql is applied automatically on first boot of an empty volume.
