@@ -15,7 +15,10 @@ from rag_pipeline.ingestion.elements import (
     ParsedDocument,
     ParseSource,
 )
+from rag_pipeline.ingestion.pdf_loader import load_pdf
+
 __all__ = [
+    "load_pdf",
     "ParsedDocument",
     "Element",
     "ElementType",
