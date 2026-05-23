@@ -18,6 +18,15 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Structure-aware parsing: hi-res layout model + OCR. Fiddly on native Windows;
+# prefer the Docker parser image (see docker-compose.yml / Dockerfile).
+parse = [
+    "unstructured[pdf]>=0.14",
+    "pdf2image>=1.17",
+    "pytesseract>=0.3.10",
+    "onnxruntime>=1.17",   # backs the 'yolox' hi-res layout model (no detectron2)
+    "pillow>=10.0",
+]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",

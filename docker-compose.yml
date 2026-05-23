@@ -22,5 +22,19 @@ services:
       timeout: 5s
       retries: 10
 
+  # Opt-in: `docker compose --profile parse run --rm parser /data/yourfile.pdf`
+  # Mounts the repo (live code) and ./data (put your PDFs there).
+  parser:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles: ["parse"]
+    volumes:
+      - ./:/app
+      - ./data:/data
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   pgdata:
