@@ -35,6 +35,9 @@ dev = [
     "mypy>=1.10",
 ]
 
+[project.scripts]
+rag-parse = "rag_pipeline.ingestion.cli:main"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
