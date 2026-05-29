@@ -54,6 +54,8 @@ def detect_scanned(
         logger.warning("scanned-detection failed for %s: %s", path, exc)
         return (False, -1.0)
 
+    if pages == 0:
+        return (False, 0.0)
     avg = total / pages
     return (avg < settings.min_chars_per_page_digital, avg)
 
