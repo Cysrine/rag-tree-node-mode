@@ -1,4 +1,5 @@
 /ProjectDetails.md
+/REPORT.md
 
 # Python
 __pycache__/
@@ -22,6 +23,11 @@ env/
 .mypy_cache/
 .coverage
 htmlcov/
+
+# Local data: put real PDFs here for validation (not tracked)
+/data/
+*.pdf
+!tests/fixtures/*.pdf
 
 # OS / editor
 .DS_Store
