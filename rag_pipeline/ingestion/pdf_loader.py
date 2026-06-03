@@ -108,6 +108,11 @@ def load_pdf(path: str, settings: Settings | None = None) -> ParsedDocument:
             "(install '.[parse]' or use the Docker parser for hi-res/OCR)."
         )
         chosen = "fallback"
+    if chosen == "ocr_only" and not _tesseract_available():
+        warnings.append(
+            "Tesseract not found on PATH; cannot OCR. Using pdfplumber fallback."
+        )
+        chosen = "fallback"
 
     logger.info(
         "Parsing %s (scanned=%s, avg_chars/page=%.0f) via %s", path, scanned, avg_chars, chosen
