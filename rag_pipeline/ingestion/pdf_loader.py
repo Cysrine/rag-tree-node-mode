@@ -119,6 +119,10 @@ def load_pdf(path: str, settings: Settings | None = None) -> ParsedDocument:
     )
     doc = _run(path, chosen, settings, warnings)
 
+    if not doc.elements and chosen != "fallback":
+        warnings.append(f"{chosen} produced no elements; retried with pdfplumber fallback.")
+        doc = _run(path, "fallback", settings, warnings)
+
     doc.is_scanned = scanned
     doc.metadata.setdefault("avg_chars_per_page", round(avg_chars, 1))
     doc.warnings = warnings + doc.warnings
