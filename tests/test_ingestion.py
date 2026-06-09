@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from rag_pipeline.config import ParseStrategy, Settings, get_settings
+from rag_pipeline.ingestion import reading_order
 from rag_pipeline.ingestion.elements import ElementType
 from rag_pipeline.ingestion.pdf_loader import detect_scanned, load_pdf
 from rag_pipeline.ingestion.pdfplumber_adapter import parse_with_pdfplumber
@@ -50,6 +51,19 @@ def test_load_pdf_forced_fallback_orders_elements(sample_pdf):
     assert doc.strategy_used == "fallback"
     # order_index is a contiguous 0..n-1 reading-order sequence.
     assert [e.order_index for e in doc.elements] == list(range(len(doc.elements)))
+
+
+def test_reading_order_columns_via_pdf(two_column_pdf):
+    doc = parse_with_pdfplumber(two_column_pdf)
+    doc.elements = reading_order.normalize(doc.elements)
+    texts = [e.text for e in doc.elements]
+
+    def pos(sub: str) -> int:
+        return next(i for i, t in enumerate(texts) if sub in t)
+
+    assert pos("Left column line one") < pos("Left column line two")
+    assert pos("Left column line two") < pos("Right column line one")
+    assert pos("Right column line one") < pos("Right column line two")
 
 
 def test_detect_scanned_false_on_digital(sample_pdf):
