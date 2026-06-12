@@ -21,7 +21,7 @@ def _detect_column_edges(elements: list[Element], page_width: float) -> list[flo
     xs = sorted(e.bbox.x0 for e in elements if e.bbox is not None)
     if not xs:
         return [0.0]
-    threshold = 30.0
+    threshold = max(30.0, 0.12 * page_width)
     edges: list[float] = [xs[0]]
     cluster_last = xs[0]
     for x in xs[1:]:
