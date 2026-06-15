@@ -54,7 +54,9 @@ def normalize(elements: list[Element]) -> list[Element]:
         page_elements = [el for _, el in items]
 
         if all(el.bbox is not None for el in page_elements):
-            page_width = max(el.bbox.x1 for el in page_elements)
+            page_width = max(
+                (el.bbox.page_width or el.bbox.x1) for el in page_elements
+            )
             edges = _detect_column_edges(page_elements, page_width)
 
             def sort_key(pair: tuple[int, Element], edges: list[float] = edges) -> tuple:
