@@ -119,7 +119,7 @@ def build_tree(doc: ParsedDocument) -> list[Node]:
             continue
         lvl = levels[i]
         if lvl is not None:
-            while len(stack) > 1 and stack[-1][0] > lvl:
+            while len(stack) > 1 and stack[-1][0] >= lvl:
                 stack.pop()
             parent = stack[-1][1]
             depth = parent.depth + 1
