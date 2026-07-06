@@ -130,7 +130,7 @@ def detect_running_headers(elements: list[Element], page_count: int) -> set[int]
     for e in elements:
         if 1 <= len(e.text.split()) <= 8:
             pages_by_text[norm(e.text)].add(e.page_number)
-    threshold = int(0.3 * page_count)
+    threshold = max(4, int(0.3 * max(1, page_count)))
     repeated = {t for t, pages in pages_by_text.items() if len(pages) >= threshold}
     if not repeated:
         return set()
