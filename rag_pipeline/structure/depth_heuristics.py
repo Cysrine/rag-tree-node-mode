@@ -103,7 +103,11 @@ def font_model(elements: list[Element]) -> FontModel | None:
             styles[(round(e.font.size), bool(e.font.bold))] += 1
     if not styles:
         return None
-    body_size, body_bold = styles.most_common(1)[0][0]
+    # Body text is the frequent-and-small style: rank by count, then smaller size,
+    # then non-bold (so a unique-per-size doc still finds a sane baseline).
+    body_size, body_bold = max(
+        styles.items(), key=lambda kv: (kv[1], -kv[0][0], not kv[0][1])
+    )[0]
     heading_styles = [
         st
         for st in styles
