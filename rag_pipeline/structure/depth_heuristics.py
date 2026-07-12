@@ -73,6 +73,10 @@ def _is_promotable(element: Element, num: Numbering) -> bool:
     if num.kind in ("word", "article"):
         return True
     if num.kind == "dotted":
+        comps = num.label.split(".")
+        if len(comps) == 1:
+            # A lone leading integer is weak evidence — reject years / long lines.
+            return comps[0].isdigit() and int(comps[0]) <= 40 and len(words) <= 8
         return True
     if num.kind == "paren":
         return len(words) <= 8
