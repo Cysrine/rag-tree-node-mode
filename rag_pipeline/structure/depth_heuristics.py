@@ -164,6 +164,7 @@ def _element_index(elements: list[Element]) -> dict[tuple[int | None, str], int]
     index: dict[tuple[int | None, str], int] = {}
     for i, e in enumerate(elements):
         index.setdefault((e.page_number, norm(e.text)), i)
+        index.setdefault((None, norm(e.text)), i)  # page-agnostic fallback
     return index
 
 
@@ -173,7 +174,7 @@ def _match_outline(
     key = norm(entry.title)
     if not key:
         return None
-    return index.get((entry.page, key))
+    return index.get((entry.page, key), index.get((None, key)))
 
 
 def apply_outline(
