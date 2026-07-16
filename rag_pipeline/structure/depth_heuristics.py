@@ -184,11 +184,12 @@ def apply_outline(
     if not _outline_usable(outline, elements):
         return False
     index = _element_index(elements)
+    min_level = min(e.level for e in outline)
     applied = False
     for entry in outline:
         idx = _match_outline(entry, index)
         if idx is not None:
-            levels[idx] = entry.level
+            levels[idx] = entry.level - min_level
             applied = True
     return applied
 
