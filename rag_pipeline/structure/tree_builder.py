@@ -105,13 +105,13 @@ def build_tree(doc: ParsedDocument) -> list[Node]:
         root.source_element_ids = [_eid(elements[title_idx], title_idx)]
 
     nodes: list[Node] = [root]
-    counter = 0
+    order: dict[int, int] = {}
     stack: list[tuple[int, Node]] = [(-1, root)]
 
     def next_order(parent: Node) -> int:
-        nonlocal counter
-        counter += 1
-        return counter - 1
+        val = order.get(id(parent), 0)
+        order[id(parent)] = val + 1
+        return val
 
     heading_count = 0
     for i, e in enumerate(elements):
