@@ -93,8 +93,20 @@ def build_tree(doc: ParsedDocument) -> list[Node]:
     drop = detect_running_headers(elements, doc.page_count)
 
     # Pick the title and lift it to the root; drop any exact repeats (page furniture).
+    # Consume the biggest-font line when it's a top-level heading OR simply larger
+    # than body text (so a cover title that isn't a bookmark still becomes the root).
     title_idx = _choose_title_idx(elements, drop, fm)
-    consume_title = title_idx is not None and levels[title_idx] == 0
+    title_el = elements[title_idx] if title_idx is not None else None
+    consume_title = title_idx is not None and (
+        levels[title_idx] == 0
+        or (
+            fm is not None
+            and title_el is not None
+            and title_el.font is not None
+            and title_el.font.size is not None
+            and round(title_el.font.size) > fm.body_size
+        )
+    )
     root_text = elements[title_idx].text if consume_title else (doc.title or "Document")
     if consume_title:
         target = norm(root_text)
