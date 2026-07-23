@@ -63,6 +63,13 @@ class Settings(BaseSettings):
     # Average extractable chars/page below which a PDF is treated as scanned.
     min_chars_per_page_digital: int = 100
 
+    # --- Chunking (Phase 3) ---
+    # Leaves below the min are grouped with siblings; leaves above the max are
+    # split on sentence boundaries.
+    chunk_max_tokens: int = 512
+    chunk_min_tokens: int = 64
+    chunk_overlap_tokens: int = 0
+
     @property
     def ocr_language_list(self) -> list[str]:
         return [code.strip() for code in self.ocr_languages.split(",") if code.strip()]
