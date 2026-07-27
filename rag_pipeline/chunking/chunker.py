@@ -131,7 +131,7 @@ def chunk_document(
     min_tokens = settings.chunk_min_tokens
 
     _ensure_node_ids(nodes)
-    leaves = [n for n in nodes if n.text.strip()]
+    leaves = [n for n in nodes if not n.is_heading and n.text.strip()]
 
     chunks: list[Chunk] = []
     buffer: list[Node] = []
