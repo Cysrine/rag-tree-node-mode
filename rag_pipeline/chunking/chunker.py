@@ -164,7 +164,7 @@ def chunk_document(
             continue
 
         # Tiny leaf: group with same-parent siblings up to the budget.
-        if buffer and buffer_tokens + tokens > max_tokens:
+        if buffer and (buffer[-1].parent is not leaf.parent or buffer_tokens + tokens > max_tokens):
             flush()
         buffer.append(leaf)
         buffer_tokens += tokens

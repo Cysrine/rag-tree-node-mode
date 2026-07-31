@@ -103,3 +103,18 @@ def test_orphan_guard_holds():
     assert chunks[0].ancestor_path == ["T", "H1", "H1.1"]
 
 
+def test_never_groups_across_parents():
+    root = Node("title", 0, 0, "T")
+    a = Node("heading", 1, 0, "A", parent=root)
+    b = Node("heading", 1, 1, "B", parent=root)
+    root.children.extend([a, b])
+    la = Node("paragraph", 2, 0, "x", parent=a)
+    lb = Node("paragraph", 2, 0, "y", parent=b)
+    a.children.append(la)
+    b.children.append(lb)
+    nodes = [root, a, la, b, lb]
+
+    chunks = chunk_document(nodes, settings=_settings(max_t=20, min_t=3), count_tokens=WORDS)
+    assert len(chunks) == 2  # "x" under A and "y" under B never merge
+    assert chunks[0].ancestor_path == ["T", "A"]
+    assert chunks[1].ancestor_path == ["T", "B"]
