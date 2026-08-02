@@ -86,6 +86,23 @@ def _embed_input(path: list[str], text: str) -> str:
     return f"{prefix}: {text}" if prefix else text
 
 
+def _split_words(sentence: str, max_tokens: int, count: TokenCounter) -> list[str]:
+    """Last resort: hard-split a single over-long sentence by words."""
+    out: list[str] = []
+    cur: list[str] = []
+    cur_tokens = 0
+    for word in sentence.split():
+        wt = max(count(word), 1)
+        if cur and cur_tokens + wt > max_tokens:
+            out.append(" ".join(cur))
+            cur, cur_tokens = [], 0
+        cur.append(word)
+        cur_tokens += wt
+    if cur:
+        out.append(" ".join(cur))
+    return out
+
+
 def _split_large_text(text: str, max_tokens: int, count: TokenCounter) -> list[str]:
     """Split an over-budget leaf on sentence boundaries, packing greedily."""
     pieces: list[str] = []
@@ -93,6 +110,12 @@ def _split_large_text(text: str, max_tokens: int, count: TokenCounter) -> list[s
     cur_tokens = 0
     for sentence in (s for s in _SENTENCE.split(text.strip()) if s):
         st = count(sentence)
+        if st > max_tokens:
+            if cur:
+                pieces.append(" ".join(cur))
+                cur, cur_tokens = [], 0
+            pieces.extend(_split_words(sentence, max_tokens, count))
+            continue
         if cur and cur_tokens + st > max_tokens:
             pieces.append(" ".join(cur))
             cur, cur_tokens = [], 0
