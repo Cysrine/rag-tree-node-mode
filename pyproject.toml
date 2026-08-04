@@ -27,6 +27,14 @@ parse = [
     "onnxruntime>=1.17",   # backs the 'yolox' hi-res layout model (no detectron2)
     "pillow>=10.0",
 ]
+# Default embedding provider: local BGE via sentence-transformers.
+embed-local = [
+    "sentence-transformers>=3.0",
+    "torch>=2.2",
+]
+# Alternative embedding providers (pluggable behind the same interface).
+embed-voyage = ["voyageai>=0.2"]
+embed-openai = ["openai>=1.30"]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
