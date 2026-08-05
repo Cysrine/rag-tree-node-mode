@@ -1,7 +1,7 @@
 -- Structure-aware RAG store: documents -> nodes (adjacency-list tree) -> chunks.
 -- Applied automatically by the docker-compose 'db' service on first boot.
--- Vector dimension is 768 to match the default embedding model
--- (BAAI/bge-base-en-v1.5). If you change RAG_EMBEDDING_DIM, change vector(N) too.
+-- Vector dimension is 1024 to match the default embedding model
+-- (BAAI/bge-large-en-v1.5). If you change RAG_EMBEDDING_DIM, change vector(N) too.
 
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";  -- gen_random_uuid()
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS chunks (
     text           TEXT NOT NULL,        -- clause text (what's shown to LLM)
     embed_input    TEXT NOT NULL,        -- path-prefixed text (what's embedded)
     ancestor_path  TEXT[],               -- denormalized ["Title","Section 3","3.2 Rates"] for fast display
-    embedding      vector(768),          -- match dim to chosen model
+    embedding      vector(1024),         -- match dim to chosen model
     created_at     TIMESTAMPTZ DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS idx_chunks_embedding ON chunks

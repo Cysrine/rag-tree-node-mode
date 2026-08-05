@@ -51,8 +51,8 @@ class Settings(BaseSettings):
 
     # --- Embeddings ---
     embedding_provider: EmbeddingProvider = EmbeddingProvider.bge
-    embedding_model: str = "BAAI/bge-base-en-v1.5"
-    embedding_dim: int = 768
+    embedding_model: str = "BAAI/bge-large-en-v1.5"
+    embedding_dim: int = 1024
 
     # --- Parsing ---
     parse_strategy: ParseStrategy = ParseStrategy.auto
