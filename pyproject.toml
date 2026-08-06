@@ -35,6 +35,12 @@ embed-local = [
 # Alternative embedding providers (pluggable behind the same interface).
 embed-voyage = ["voyageai>=0.2"]
 embed-openai = ["openai>=1.30"]
+# Storage / vector store.
+storage = [
+    "psycopg[binary]>=3.1",
+    "pgvector>=0.3",
+    "numpy>=1.26",
+]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
