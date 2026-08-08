@@ -53,6 +53,7 @@ dev = [
 rag-parse = "rag_pipeline.ingestion.cli:main"
 rag-tree = "rag_pipeline.structure.cli:main"
 rag-chunk = "rag_pipeline.chunking.cli:main"
+rag-ingest = "rag_pipeline.pipeline:main"
 
 [build-system]
 requires = ["hatchling"]
