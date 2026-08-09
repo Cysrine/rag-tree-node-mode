@@ -5,6 +5,7 @@ services:
   db:
     image: pgvector/pgvector:pg16
     container_name: rag_tree_db
+    restart: unless-stopped   # survive Docker Desktop / machine restarts
     environment:
       POSTGRES_USER: rag
       POSTGRES_PASSWORD: rag
