@@ -64,9 +64,10 @@ class Settings(BaseSettings):
     min_chars_per_page_digital: int = 100
 
     # --- Chunking (Phase 3) ---
-    # Leaves below the min are grouped with siblings; leaves above the max are
-    # split on sentence boundaries.
-    chunk_max_tokens: int = 512
+    # Max is kept under a typical 512-token embedder limit to leave headroom for the
+    # ancestor-path prefix in embed_input. Leaves below the min are grouped with
+    # siblings; leaves above the max are split on sentence boundaries.
+    chunk_max_tokens: int = 384
     chunk_min_tokens: int = 64
     chunk_overlap_tokens: int = 0
 
