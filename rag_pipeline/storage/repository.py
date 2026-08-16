@@ -67,7 +67,12 @@ class Repository:
     # --- schema ---
     def apply_schema(self) -> None:
         sql = SCHEMA_PATH.read_text(encoding="utf-8")
-        statements = [s.strip() for s in sql.split(";") if s.strip()]
+        # Strip line comments first (they can contain ';'), then split on ';'.
+        # schema.sql has no dollar-quoted functions or string literals with ';'.
+        no_comments = "\n".join(
+            line[: line.index("--")] if "--" in line else line for line in sql.splitlines()
+        )
+        statements = [s.strip() for s in no_comments.split(";") if s.strip()]
         with self._connect() as conn, conn.cursor() as cur:
             for stmt in statements:
                 cur.execute(stmt)
