@@ -131,7 +131,7 @@ class Repository:
                         list(c.ancestor_path),
                         np.asarray(emb, dtype=np.float32),
                     )
-                    for c, emb in zip(chunks, embeddings)
+                    for c, emb in zip(chunks, embeddings, strict=True)
                 ]
                 cur.executemany(
                     "INSERT INTO chunks"
