@@ -71,6 +71,9 @@ class Settings(BaseSettings):
     chunk_min_tokens: int = 64
     chunk_overlap_tokens: int = 0
 
+    # --- Retrieval (Phase 5) ---
+    retrieval_top_k: int = 8
+
     @property
     def ocr_language_list(self) -> list[str]:
         return [code.strip() for code in self.ocr_languages.split(",") if code.strip()]
