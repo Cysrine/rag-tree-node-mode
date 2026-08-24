@@ -67,7 +67,9 @@ class MergedNode:
     hits: list[ClauseHit] = field(default_factory=list)
 
     def best_score(self) -> float:
-        return max((h.score for h in self.hits), default=0.0)
+        scores = [h.score for h in self.hits]
+        scores += [c.best_score() for c in self.children.values()]
+        return max(scores) if scores else 0.0
 
 
 @dataclass
