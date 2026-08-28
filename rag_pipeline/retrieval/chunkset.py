@@ -156,10 +156,12 @@ def render(roots: list[MergedNode], max_clause: int = 400) -> str:
 
     def walk(node: MergedNode) -> None:
         indent = "  " * node.depth
-        lines.append(f"{indent}[{node.node_type}] {_one_line(node.text, 100)}")
-        for child in sorted(node.children.values(), key=lambda m: m.best_score(), reverse=True):
-            walk(child)
-        clause_indent = "  " * (node.depth + 1)
+        is_leaf = bool(node.hits) and not node.children
+        if not is_leaf:
+            lines.append(f"{indent}[{node.node_type}] {_one_line(node.text, 100)}")
+            for child in sorted(node.children.values(), key=lambda m: m.best_score(), reverse=True):
+                walk(child)
+        clause_indent = indent if is_leaf else "  " * (node.depth + 1)
         for h in sorted(node.hits, key=lambda x: x.score, reverse=True):
             lines.append(f"{clause_indent}- [{h.score:.2f}] {_one_line(h.clause, max_clause)}")
 
