@@ -151,24 +151,32 @@ class Repository:
             return cur.fetchall()
 
     def get_paths(self, node_ids: Sequence[Any]) -> dict[str, list[dict]]:
-        """Root-to-leaf paths for many leaves (one recursive query per leaf)."""
+        """Batched root-to-leaf paths for many leaves in one recursive query.
+
+        Returns {leaf_node_id: [root_row, ..., leaf_row]} (each list ordered root
+        first). Each row carries id/parent_id/node_type/depth/order_index/text.
+        """
         from psycopg.rows import dict_row
 
+        ids = [_as_uuid(x) for x in node_ids]
+        if not ids:
+            return {}
         sql = """
         WITH RECURSIVE path AS (
-            SELECT id, parent_id, node_type, depth, order_index, text
-            FROM nodes WHERE id = %(node_id)s
+            SELECT id, parent_id, node_type, depth, order_index, text, id AS origin
+            FROM nodes WHERE id = ANY(%(ids)s)
             UNION ALL
-            SELECT n.id, n.parent_id, n.node_type, n.depth, n.order_index, n.text
+            SELECT n.id, n.parent_id, n.node_type, n.depth, n.order_index, n.text, p.origin
             FROM nodes n JOIN path p ON n.id = p.parent_id
         )
-        SELECT * FROM path ORDER BY depth ASC
+        SELECT id, parent_id, node_type, depth, order_index, text, origin
+        FROM path ORDER BY origin, depth ASC
         """
         out: dict[str, list[dict]] = {}
-        for node_id in node_ids:
-            with self._connect() as conn, conn.cursor(row_factory=dict_row) as cur:
-                cur.execute(sql, {"node_id": _as_uuid(node_id)})
-                out[str(node_id)] = cur.fetchall()
+        with self._connect() as conn, conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(sql, {"ids": ids})
+            for row in cur.fetchall():
+                out.setdefault(str(row["origin"]), []).append(row)
         return out
 
     def vector_search(self, embedding: Sequence[float], top_k: int = 10) -> list[dict]:
