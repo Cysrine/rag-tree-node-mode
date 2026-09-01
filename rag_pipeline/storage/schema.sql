@@ -27,6 +27,8 @@ CREATE TABLE IF NOT EXISTS nodes (
 );
 CREATE INDEX IF NOT EXISTS idx_nodes_document ON nodes(document_id);
 CREATE INDEX IF NOT EXISTS idx_nodes_parent   ON nodes(parent_id);
+-- Fast, stable sibling ordering when reconstructing a section in reading order.
+CREATE INDEX IF NOT EXISTS idx_nodes_doc_parent_order ON nodes(document_id, parent_id, order_index);
 
 -- Chunks: leaf-anchored, embedded. Each references its source node.
 CREATE TABLE IF NOT EXISTS chunks (
@@ -39,5 +41,7 @@ CREATE TABLE IF NOT EXISTS chunks (
     embedding      vector(1024),         -- match dim to chosen model
     created_at     TIMESTAMPTZ DEFAULT now()
 );
+CREATE INDEX IF NOT EXISTS idx_chunks_document  ON chunks(document_id);
+CREATE INDEX IF NOT EXISTS idx_chunks_node      ON chunks(node_id);
 CREATE INDEX IF NOT EXISTS idx_chunks_embedding ON chunks
     USING hnsw (embedding vector_cosine_ops);
