@@ -13,6 +13,7 @@ authors = [{ name = "Anant Raghavan", email = "anant.j.raghavan@gmail.com" }]
 dependencies = [
     "pydantic>=2.6",
     "pydantic-settings>=2.2",
+    "python-dotenv>=1.0",  # load .env into os.environ (e.g. hyphenated API-key names)
     "pdfplumber>=0.11",   # fallback parser: text + coordinates + font metadata
     "pypdf>=4.2",         # cheap page/text probing for scanned detection
 ]
@@ -35,6 +36,8 @@ embed-local = [
 # Alternative embedding providers (pluggable behind the same interface).
 embed-voyage = ["voyageai>=0.2"]
 embed-openai = ["openai>=1.30"]
+# Generation (Phase 6): Groq-hosted LLMs (Qwen3, Llama, ...).
+llm-groq = ["groq>=0.11"]
 # Storage / vector store.
 storage = [
     "psycopg[binary]>=3.1",

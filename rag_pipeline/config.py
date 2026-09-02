@@ -19,6 +19,12 @@ class EmbeddingProvider(str, Enum):
     dev = "dev"
 
 
+class LLMProvider(str, Enum):
+    groq = "groq"
+    anthropic = "anthropic"
+    openai = "openai"
+
+
 class ParseStrategy(str, Enum):
     """How to parse a PDF.
 
@@ -71,8 +77,15 @@ class Settings(BaseSettings):
     chunk_min_tokens: int = 64
     chunk_overlap_tokens: int = 0
 
-    # --- Retrieval (Phase 5) ---
+    # --- Retrieval / Generation (Phase 5/6) ---
     retrieval_top_k: int = 8
+    llm_provider: LLMProvider = LLMProvider.groq
+    llm_model: str = "qwen/qwen3.8-27b"
+    # Name of the env var holding the API key (read from .env at call time).
+    llm_api_key_env: str = "GROQ-KEY"
+    llm_base_url: str = ""  # blank = provider default
+    llm_temperature: float = 0.2
+    llm_max_tokens: int = 1024
 
     @property
     def ocr_language_list(self) -> list[str]:
