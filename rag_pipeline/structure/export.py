@@ -52,7 +52,7 @@ def to_markdown_headings(
     return "\n".join(lines).strip()
 
 
-_MERMAID_BAD = re.compile(r'["#]')
+_MERMAID_BAD = re.compile(r'[()\[\]{}"#;|]')
 
 
 def _mermaid_label(text: str) -> str:
