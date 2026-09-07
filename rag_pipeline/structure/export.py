@@ -104,7 +104,7 @@ FORMATS = {
 # --- Obsidian vault (one note per node, [[wikilinks]] -> Graph View) ---------
 
 # Characters not allowed in Obsidian note filenames / that break wikilinks.
-_ILLEGAL_FILENAME = re.compile(r'[\\/:*?"<>|]+')
+_ILLEGAL_FILENAME = re.compile(r'[\\/:*?"<>|#^\[\]]+')
 
 
 def _safe_filename(text: str) -> str:
@@ -113,8 +113,19 @@ def _safe_filename(text: str) -> str:
 
 
 def _unique_names(nodes: list[Node]) -> dict[int, str]:
-    """Filename-safe note name per node."""
-    return {id(n): _safe_filename(n.text) for n in nodes}
+    """Assign each node a unique, filename-safe note name (dedupes with ' (2)')."""
+    names: dict[int, str] = {}
+    used: set[str] = set()
+    for n in nodes:
+        base = _safe_filename(n.text)
+        name = base
+        i = 2
+        while name.lower() in used:
+            name = f"{base} ({i})"
+            i += 1
+        used.add(name.lower())
+        names[id(n)] = name
+    return names
 
 
 def _vault_note(node: Node, parent_name: str | None, children_names: list[str]) -> str:

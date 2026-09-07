@@ -71,3 +71,28 @@ def test_max_depth_limits_export():
     assert "Sub A" not in out  # depth 2 excluded
 
 
+def test_obsidian_vault_writes_linked_notes(tmp_path):
+    root = Node("title", 0, 0, "My Doc")
+    a = Node("heading", 1, 0, "Introduction", parent=root)
+    b = Node("heading", 1, 1, "Section: A/B?", parent=root)   # illegal filename chars
+    c = Node("subheading", 2, 0, "Introduction", parent=b)    # duplicate name
+    root.children = [a, b]
+    b.children = [c]
+    nodes = [root, a, b, c]
+
+    count = write_obsidian_vault(nodes, str(tmp_path), headings_only=True)
+    files = set(os.listdir(tmp_path))
+    assert count == 4 and len(files) == 4
+
+    # Illegal characters are stripped from the filename.
+    assert "Section A B.md" in files
+    # Duplicate "Introduction" is disambiguated.
+    assert "Introduction.md" in files and "Introduction (2).md" in files
+
+    root_note = (tmp_path / "My Doc.md").read_text(encoding="utf-8")
+    assert "[[Introduction]]" in root_note and "[[Section A B]]" in root_note  # child links
+
+    intro = (tmp_path / "Introduction.md").read_text(encoding="utf-8")
+    assert "**Parent:** [[My Doc]]" in intro   # links back up -> tree edge
+
+
