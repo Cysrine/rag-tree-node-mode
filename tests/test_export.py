@@ -96,3 +96,11 @@ def test_obsidian_vault_writes_linked_notes(tmp_path):
     assert "**Parent:** [[My Doc]]" in intro   # links back up -> tree edge
 
 
+def test_obsidian_vault_guards_against_too_many_notes(tmp_path):
+    import pytest
+
+    big = [Node("title", 0, 0, "Root")] + [
+        Node("heading", 1, i, f"H{i}", parent=None) for i in range(10)
+    ]
+    with pytest.raises(RuntimeError):
+        write_obsidian_vault(big, str(tmp_path), max_notes=5)

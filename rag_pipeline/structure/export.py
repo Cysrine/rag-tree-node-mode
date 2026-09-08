@@ -149,6 +149,7 @@ def write_obsidian_vault(
     *,
     headings_only: bool = True,
     max_depth: int | None = None,
+    max_notes: int = 5000,
 ) -> int:
     """Write one .md note per node into ``out_dir``; each links to its parent.
 
@@ -156,6 +157,11 @@ def write_obsidian_vault(
     renders the tree. Returns the number of notes written.
     """
     visible = _visible(nodes, headings_only, max_depth)
+    if len(visible) > max_notes:
+        raise RuntimeError(
+            f"{len(visible)} notes would be written (limit {max_notes}). Reduce with "
+            f"--max-depth, or keep headings-only (drop --all)."
+        )
     names = _unique_names(visible)
     os.makedirs(out_dir, exist_ok=True)
     for n in visible:
