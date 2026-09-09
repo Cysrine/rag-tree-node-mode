@@ -72,7 +72,7 @@ packages = ["rag_pipeline"]
 include = ["rag_pipeline/**/*.py", "rag_pipeline/**/*.sql"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "rag_pipeline/eval"]
 addopts = "-ra"
 filterwarnings = ["ignore::DeprecationWarning"]
 
