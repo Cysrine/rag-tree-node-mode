@@ -59,6 +59,7 @@ rag-chunk = "rag_pipeline.chunking.cli:main"
 rag-ingest = "rag_pipeline.pipeline:main"
 rag-search = "rag_pipeline.retrieval.cli:main"
 rag-ask = "rag_pipeline.generation.cli:main"
+rag-eval = "rag_pipeline.eval.cli:main"
 
 [build-system]
 requires = ["hatchling"]
