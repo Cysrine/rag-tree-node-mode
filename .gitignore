@@ -35,5 +35,16 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Generated outputs (parse dumps, tree exports, Obsidian vaults)
+/out.json
+/parse.json
+/tree.json
+/chunks.json
+*-mindmap.md
+*-graph.md
+*-tree.md
+*-outline.md
+*-vault/
+
 # Claude Code local settings
 .claude/settings.local.json
